@@ -1,6 +1,6 @@
 # Sapine
 
-TODO: Write a gem description
+Sabine adds boilerplate code for common API parameter handling like limit, offset, order and filtering by state.
 
 ## Installation
 
@@ -18,7 +18,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Include Sapine in you API controller and use its chainable methods to build your query. It handles common API parameters like page, limit, state, etc.
+
+```
+class ResourceController < ApplicationController
+  include Sapine
+
+  def index
+    @resources = index_options(Resource)
+  end
+end
+```
 
 ## Contributing
 
