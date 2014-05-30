@@ -4,24 +4,40 @@ module Sapine
   DEFAULT_PER_PAGE = 20
 
   def self.included(base)
-    
+  end
+
+  def set_default_meta
+    @_sapine_meta = {
+      pages: 0,
+      page: 1,
+      per_page: DEFAULT_PER_PAGE,
+      count: 0
+    }    
   end
   
   def index_options(chain)
-    chain = chain.where(state: params[:state]) if params[:state]
-
+    set_default_meta unless @_sapine_meta
     chain = sapine_add_order_by(chain, params[:order_by]) if params[:order_by]
 
-    if params[:per_page].present?
-      chain = chain.limit(params[:per_page])
-    else
-      chain = chain.limit(DEFAULT_PER_PAGE)
-    end
-    chain = chain.offset((params[:page].to_i - 1) * (params[:per_page] || DEFAULT_PER_PAGE)) if params[:page].present? and params[:page].to_i > 0
+    @_sapine_meta[:count] = chain.count
+    @_sapine_meta[:pages] = (@_sapine_meta[:count] / per_page).ceil
+
+    chain = chain.limit(per_page)
+    chain = chain.offset((params[:page].to_i - 1) * per_page) if params[:page].present? and params[:page].to_i > 0
+
     chain
   end
 
+  def api_meta
+    @_sapine_meta
+  end
+
   private
+
+  def per_page
+    params[:per_page] || DEFAULT_PER_PAGE
+  end
+
   def sapine_add_order_by(chain, order_by)
     if order_by[0] == "-"
       desc = true

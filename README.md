@@ -30,6 +30,12 @@ class ResourceController < ApplicationController
 end
 ```
 
+After you call index_options you can access api_meta to get paging and count information.
+
+```
+render json: @resources, meta: api_meta
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/sapine/fork )

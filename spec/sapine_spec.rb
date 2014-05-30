@@ -14,12 +14,6 @@ describe "Sapine" do
       @ws = WithSapine.new
     end
 
-    it "adds a state clause" do
-      @ws.stub(:params).and_return({state: "open"})
-      chain = @ws.index_options(TestModel)
-      chain.to_sql.include?("\"state\" = 'open'").should be(true)
-    end
-
     it "adds an order" do
       @ws.stub(:params).and_return({order_by: "state"})
       chain = @ws.index_options(TestModel)
@@ -48,6 +42,12 @@ describe "Sapine" do
       @ws.stub(:params).and_return({page: 2})
       chain = @ws.index_options(TestModel)
       chain.to_sql.should eql("SELECT  \"test_models\".* FROM \"test_models\"  LIMIT 20 OFFSET 20")
+    end
+
+    it "returns the count in api_meta" do
+      @ws.stub(:params).and_return({})
+      chain = @ws.index_options(TestModel)
+      @ws.api_meta.count.should be(4)
     end
   end
 
