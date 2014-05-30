@@ -35,7 +35,7 @@ module Sapine
   private
 
   def per_page
-    params[:per_page] || DEFAULT_PER_PAGE
+    params[:per_page] ? params[:per_page].to_i : DEFAULT_PER_PAGE
   end
 
   def sapine_add_order_by(chain, order_by)
