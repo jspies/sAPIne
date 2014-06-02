@@ -10,7 +10,7 @@ module Sapine
     @_sapine_meta = {
       pages: 0,
       page: 1,
-      per_page: DEFAULT_PER_PAGE,
+      per_page: per_page,
       count: 0
     }    
   end
@@ -20,7 +20,7 @@ module Sapine
     chain = sapine_add_order_by(chain, params[:order_by]) if params[:order_by]
 
     @_sapine_meta[:count] = chain.count
-    @_sapine_meta[:pages] = (@_sapine_meta[:count] / per_page).ceil
+    @_sapine_meta[:pages] = (@_sapine_meta[:count] / per_page.to_f).ceil
 
     chain = chain.limit(per_page)
     chain = chain.offset((params[:page].to_i - 1) * per_page) if params[:page].present? and params[:page].to_i > 0
@@ -29,6 +29,7 @@ module Sapine
   end
 
   def api_meta
+    set_default_meta unless @_sapine_meta
     @_sapine_meta
   end
 

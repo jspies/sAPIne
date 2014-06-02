@@ -51,5 +51,22 @@ describe "Sapine" do
     end
   end
 
+  context "meta" do
+    before do
+      @ws = WithSapine.new
+      @ws.stub(:params).and_return({per_page: 12})
+    end
+
+    it "returns the params per_page" do
+      @ws.api_meta[:per_page].should eql(12)
+    end
+
+    it "calculates the pages" do
+      TestModel.create
+      @ws.index_options(TestModel)
+      @ws.api_meta[:pages].should eql(1)
+    end
+  end
+
 
 end
