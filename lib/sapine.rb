@@ -44,20 +44,22 @@ module Sapine
   end
 
   def order_by
-    return unless params[:order_by].present?
+    return {} unless params[:order_by].present?
 
     order = {}
+    order_values = Array(params[:order_by])
 
-    if params[:order_by].starts_with? "-"
-      order[params[:order_by][1..-1]] = 'desc'
+    order_values.each do |value|
+      if value.starts_with? "-"
+        order[value[1..-1]] = 'desc'
 
-    elsif params[:order_by].starts_with? "+"
-      order[params[:order_by][1..-1]] = 'asc'
+      elsif value.starts_with? "+"
+        order[value[1..-1]] = 'asc'
 
-    else
-      order[params[:order_by]] = 'asc'
+      else
+        order[value] = 'asc'
+      end
     end
-
     order
   end
 
