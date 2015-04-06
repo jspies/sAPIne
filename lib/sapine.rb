@@ -23,8 +23,18 @@ module Sapine
     @_sapine_meta[:pages] = (@_sapine_meta[:count] / per_page.to_f).ceil
 
     chain = chain.limit(per_page)
-    chain = chain.offset((params[:page].to_i - 1) * per_page) if params[:page].present? and params[:page].to_i > 0
+    chain = chain.offset(offset)
 
+    chain
+  end
+
+  # for elastic search
+  def elasticsearch_index_options(chain)
+    set_default_meta unless @_sapine_meta
+    @_sapine_meta[:count] = chain.total_entries
+    @_sapine_meta[:pages] = (@_sapine_meta[:count] / per_page.to_f).ceil
+
+    puts @_sapine_meta
     chain
   end
 
@@ -32,6 +42,36 @@ module Sapine
     set_default_meta unless @_sapine_meta
     @_sapine_meta
   end
+
+  def order_by
+    return {} unless params[:order_by].present?
+
+    order = {}
+    order_values = Array(params[:order_by])
+
+    order_values.each do |value|
+      if value.starts_with? "-"
+        order[value[1..-1]] = 'desc'
+
+      elsif value.starts_with? "+"
+        order[value[1..-1]] = 'asc'
+
+      else
+        order[value] = 'asc'
+      end
+    end
+    order
+  end
+
+  def offset
+    if params[:page].present? and params[:page].to_i > 0
+      ((params[:page].to_i - 1) * per_page)
+    else
+      0
+    end
+  end
+
+
 
   private
 
