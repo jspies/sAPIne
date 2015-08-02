@@ -33,8 +33,7 @@ module Sapine
     set_default_meta unless @_sapine_meta
     @_sapine_meta[:count] = chain.total_entries
     @_sapine_meta[:pages] = (@_sapine_meta[:count] / per_page.to_f).ceil
-
-    puts @_sapine_meta
+    
     chain
   end
 
