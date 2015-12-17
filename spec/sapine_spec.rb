@@ -54,7 +54,7 @@ describe "Sapine" do
   context "meta" do
     before do
       @ws = WithSapine.new
-      @ws.stub(:params).and_return({per_page: 12})
+      @ws.stub(:params).and_return({ per_page: 12, page: 3 })
     end
 
     it "returns the params per_page" do
@@ -65,6 +65,10 @@ describe "Sapine" do
       TestModel.create
       @ws.index_options(TestModel)
       expect(@ws.api_meta[:pages]).to eql(1)
+    end
+
+    it 'returns the passed in page number' do
+      expect(@ws.api_meta[:page]).to eql(3)
     end
   end
 

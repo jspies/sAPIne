@@ -2,6 +2,7 @@ require "sapine/version"
 
 module Sapine
   DEFAULT_PER_PAGE = 20
+  DEFAULT_PAGE     = 1
 
   def self.included(base)
   end
@@ -9,12 +10,12 @@ module Sapine
   def set_default_meta
     @_sapine_meta = {
       pages: 0,
-      page: 1,
+      page: page,
       per_page: per_page,
       count: 0
-    }    
+    }
   end
-  
+
   def index_options(chain)
     set_default_meta unless @_sapine_meta
     chain = sapine_add_order_by(chain, params[:order_by]) if params[:order_by]
@@ -33,7 +34,7 @@ module Sapine
     set_default_meta unless @_sapine_meta
     @_sapine_meta[:count] = chain.total_entries
     @_sapine_meta[:pages] = (@_sapine_meta[:count] / per_page.to_f).ceil
-    
+
     chain
   end
 
@@ -76,6 +77,10 @@ module Sapine
 
   def per_page
     params[:per_page] ? params[:per_page].to_i : DEFAULT_PER_PAGE
+  end
+
+  def page
+    params[:page] ? params[:page].to_i : DEFAULT_PAGE
   end
 
   def sapine_add_order_by(chain, order_by)
